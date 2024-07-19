@@ -19,7 +19,7 @@
       <TextField fx:id="namechangefield" layoutX="291.0" layoutY="292.0" promptText="New Username" />
       <PasswordField fx:id="namechangefield2" layoutX="492.0" layoutY="292.0" prefHeight="24.0" prefWidth="303.0" promptText="Password" />
       <Button fx:id="confirm" layoutX="828.0" layoutY="292.0" mnemonicParsing="false" onAction="#chnageUserNameHandler" prefHeight="24.0" prefWidth="119.0" text="Confirm" />
-      <Button fx:id="confirm2" layoutX="883.0" layoutY="470.0" mnemonicParsing="false" onAction="#chnageUserpasswordHandler" text="Confirm" />
+      <Button fx:id="confirm2" layoutX="883.0" layoutY="470.0" mnemonicParsing="false" onAction="#changeUserPasswordHandler" text="Confirm" />
       <Label layoutX="505.0" layoutY="571.0" text="DELETE ACCOUNT" />
       <TextField fx:id="delacctname" layoutX="296.0" layoutY="634.0" promptText="Username" />
       <PasswordField fx:id="delacctpass" layoutX="498.0" layoutY="634.0" prefHeight="24.0" prefWidth="303.0" promptText="Password" />

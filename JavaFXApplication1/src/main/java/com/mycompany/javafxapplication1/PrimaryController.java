@@ -21,7 +21,7 @@ public class PrimaryController {
     @FXML
     private PasswordField passPasswordField;
     
-     public static User username_;
+    public static User username_;
 
     @FXML
     private void registerBtnHandler(ActionEvent event) {

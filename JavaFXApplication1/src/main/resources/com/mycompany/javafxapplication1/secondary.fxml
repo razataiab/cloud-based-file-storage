@@ -31,7 +31,6 @@
         </GridPane>
         <Button fx:id="terminalbtn" layoutX="510.0" layoutY="730.0" mnemonicParsing="false" onAction="#terminalbtnHandler" prefHeight="24.0" prefWidth="127.0" text="Terminal" />
         <Button fx:id="fileBtn" layoutX="365.0" layoutY="730.0" mnemonicParsing="false" onAction="#switchToFile" prefHeight="24.0" prefWidth="127.0" text="Files" />
-          <Button fx:id="secondaryButton" layoutX="1020.0" layoutY="730.0" onAction="#switchToPrimary" text="Return to Login" />
       <Label layoutX="152.0" layoutY="733.0" prefHeight="18.0" prefWidth="66.0" text="Menu:">
          <font>
             <Font name="System Bold" size="14.0" />
