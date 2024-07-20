@@ -154,7 +154,7 @@ public class SecondaryController {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("file.fxml"));
             Parent root = loader.load();
-            Scene scene = new Scene(root, 400, 300); // Adjust the size as needed
+            Scene scene = new Scene(root, 800, 600); // Adjust the size as needed
             secondaryStage.setScene(scene);
             secondaryStage.setTitle("Files");
             secondaryStage.show();
@@ -163,6 +163,9 @@ public class SecondaryController {
             e.printStackTrace();
         }
     }
+
+
+
     
      private static void deleteDirectory(File directory) {
         if (directory.exists()) {
