@@ -50,4 +50,22 @@ public class ManageUsersController {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    private void changeUserNameHandler() {
+        // Your code to handle the username change
+        System.out.println("Username change handler triggered");
+    }
+
+    @FXML
+    private void changeUserPasswordHandler() {
+        // Your code to handle the username change
+        System.out.println("Password change handler triggered");
+    }
+
+    @FXML
+    private void deleteAccountBtnHandler() {
+        // Your code to handle the username change
+        System.out.println("Account delete handler triggered");
+    }
 }
