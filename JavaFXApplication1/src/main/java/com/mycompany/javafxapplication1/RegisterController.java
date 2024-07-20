@@ -1,7 +1,7 @@
 package com.mycompany.javafxapplication1;
 
 import static com.mycompany.javafxapplication1.PrimaryController.username_;
-
+import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -33,12 +33,17 @@ public class RegisterController {
     private void registerBtnHandler(ActionEvent event) {
         Stage secondaryStage = new Stage();
         Stage primaryStage = (Stage) registerBtn.getScene().getWindow();
+        DB myObj = new DB();
         try {
             FXMLLoader loader = new FXMLLoader();
-            
+
             if (passPasswordField.getText().equals(rePassPasswordField.getText())) {
                 username_ = new User(userTextField.getText(), passPasswordField.getText());
                 String[] credentials = {userTextField.getText(), passPasswordField.getText()};
+                
+                // Add user to the database
+                myObj.addDataToDB(userTextField.getText(), passPasswordField.getText());
+
                 loader.setLocation(getClass().getResource("secondary.fxml"));
                 Parent root = loader.load();
                 Scene scene = new Scene(root, 1250, 900);
