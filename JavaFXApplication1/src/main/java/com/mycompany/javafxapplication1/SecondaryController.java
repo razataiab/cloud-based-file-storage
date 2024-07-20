@@ -147,23 +147,18 @@ public class SecondaryController {
     }
     
     @FXML
-    private void switchToFile(){
+    private void switchToFile() {
         Stage secondaryStage = new Stage();
-        Stage primaryStage = (Stage) secondaryButton.getScene().getWindow();
+        Stage primaryStage = (Stage) fileBtn.getScene().getWindow();
         try {
-            
-        
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("file.fxml"));
             Parent root = loader.load();
-            Scene scene = new Scene(root, 1250, 900);
+            Scene scene = new Scene(root, 400, 300); // Adjust the size as needed
             secondaryStage.setScene(scene);
-            //FileController controller = loader.getController();
-            //controller.initialise2();
             secondaryStage.setTitle("Files");
             secondaryStage.show();
             primaryStage.close();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
