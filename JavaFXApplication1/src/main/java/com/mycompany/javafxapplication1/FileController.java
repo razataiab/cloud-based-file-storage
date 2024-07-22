@@ -1,21 +1,20 @@
 package com.mycompany.javafxapplication1;
 
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 public class FileController {
 
@@ -106,6 +105,7 @@ public class FileController {
             showAlert("Error", "No file selected.");
         }
     }
+    
 
     @FXML
     private void handleDeleteButton(ActionEvent event) {
@@ -127,6 +127,7 @@ public class FileController {
             showAlert("Error", "No files selected.");
         }
     }
+    
 
     private void saveFileToDirectory(File file) {
         File destDir = new File(System.getProperty("user.dir"), "UploadedFiles");
@@ -140,6 +141,7 @@ public class FileController {
             e.printStackTrace();
         }
     }
+
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
