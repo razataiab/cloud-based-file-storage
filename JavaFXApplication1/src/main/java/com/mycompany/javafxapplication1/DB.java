@@ -177,6 +177,29 @@ public class DB {
         return flag;
     }
 
+    public void deleteUser(String username) throws ClassNotFoundException {
+    try {
+        Class.forName("org.sqlite.JDBC");
+        connection = DriverManager.getConnection(fileName);
+        String query = "DELETE FROM " + this.dataBaseTableName + " WHERE name = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, username);
+            statement.executeUpdate();
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+    } finally {
+        try {
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            }
+        }
+    }
+
+
     private String getSaltvalue(int length) {
         StringBuilder finalval = new StringBuilder(length);
         for (int i = 0; i < length; i++) {

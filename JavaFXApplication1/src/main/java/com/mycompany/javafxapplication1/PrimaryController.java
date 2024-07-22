@@ -5,10 +5,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
 
 public class PrimaryController {
 
@@ -21,13 +24,12 @@ public class PrimaryController {
     @FXML
     private PasswordField passPasswordField;
     
-     public static User username_;
+    public static User username_;
 
     @FXML
     private void registerBtnHandler(ActionEvent event) {
         Stage secondaryStage = new Stage();
         Stage primaryStage = (Stage) registerBtn.getScene().getWindow();
-        // DB myObj = new DB("Users");
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("register.fxml"));
@@ -65,6 +67,13 @@ public class PrimaryController {
                 secondaryStage.setUserData(msg);
                 secondaryStage.show();
                 primaryStage.close();
+            } else {
+                // Show an alert if credentials are invalid
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Login Error");
+                alert.setHeaderText(null);
+                alert.setContentText("Invalid username or password. Please try again.");
+                alert.showAndWait();
             }
         } catch (Exception e) {
             e.printStackTrace();
