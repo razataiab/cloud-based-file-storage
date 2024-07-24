@@ -288,4 +288,12 @@ public class DB {
     public void log(String message) {
         System.out.println(message);
     }
+
+    public String getUserDirectory(String username) {
+        File userDir = new File(System.getProperty("user.dir"), "UploadedFiles/" + username);
+        if (!userDir.exists()) {
+            userDir.mkdirs();
+        }
+        return userDir.getAbsolutePath();
+    }
 }

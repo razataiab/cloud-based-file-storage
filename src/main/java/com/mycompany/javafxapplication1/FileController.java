@@ -33,6 +33,14 @@ public class FileController {
     private File selectedFile;
     private File fileToRename;
     private List<File> filesToDelete;
+    private String userDirectory;
+
+    @FXML
+    private void initialize() {
+        DB db = new DB();
+        String username = PrimaryController.username_.getUsername();
+        userDirectory = db.getUserDirectory(username);
+    }
 
     @FXML
     private void handleSelectFileButton(ActionEvent event) {
@@ -48,7 +56,7 @@ public class FileController {
     private void handleSelectFileToRenameButton(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select File to Rename");
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir"), "UploadedFiles"));
+        fileChooser.setInitialDirectory(new File(userDirectory));
         fileToRename = fileChooser.showOpenDialog(new Stage());
         if (fileToRename != null) {
             renameFilePathField.setText(fileToRename.getAbsolutePath());
@@ -59,7 +67,7 @@ public class FileController {
     private void handleSelectFileToDeleteButton(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Files to Delete");
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir"), "UploadedFiles"));
+        fileChooser.setInitialDirectory(new File(userDirectory));
         filesToDelete = fileChooser.showOpenMultipleDialog(new Stage());
         deleteFileListView.getItems().clear();
         if (filesToDelete != null) {
@@ -84,26 +92,21 @@ public class FileController {
     @FXML
     private void handleRenameButton(ActionEvent event) {
         if (fileToRename != null) {
-            File destDir = new File(System.getProperty("user.dir"), "UploadedFiles");
-            if (fileToRename.getParentFile().equals(destDir)) {
-                TextInputDialog dialog = new TextInputDialog(fileToRename.getName());
-                dialog.setTitle("Rename File");
-                dialog.setHeaderText("Rename File");
-                dialog.setContentText("Enter new name:");
-                Optional<String> result = dialog.showAndWait();
-                result.ifPresent(newName -> {
-                    File newFile = new File(destDir, newName);
-                    if (fileToRename.renameTo(newFile)) {
-                        showAlert("Success", "File renamed successfully.");
-                        renameFilePathField.clear();
-                        fileToRename = null;
-                    } else {
-                        showAlert("Error", "Failed to rename file.");
-                    }
-                });
-            } else {
-                showAlert("Error", "Can only rename files in the UploadedFiles directory.");
-            }
+            TextInputDialog dialog = new TextInputDialog(fileToRename.getName());
+            dialog.setTitle("Rename File");
+            dialog.setHeaderText("Rename File");
+            dialog.setContentText("Enter new name:");
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(newName -> {
+                File newFile = new File(userDirectory, newName);
+                if (fileToRename.renameTo(newFile)) {
+                    showAlert("Success", "File renamed successfully.");
+                    renameFilePathField.clear();
+                    fileToRename = null;
+                } else {
+                    showAlert("Error", "Failed to rename file.");
+                }
+            });
         } else {
             showAlert("Error", "No file selected.");
         }
@@ -145,11 +148,7 @@ public class FileController {
     }
 
     private void saveFileToDirectory(File file) {
-        File destDir = new File(System.getProperty("user.dir"), "UploadedFiles");
-        if (!destDir.exists()) {
-            destDir.mkdirs();
-        }
-        File destFile = new File(destDir, file.getName());
+        File destFile = new File(userDirectory, file.getName());
         try {
             Files.copy(file.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
