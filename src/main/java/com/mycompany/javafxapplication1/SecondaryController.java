@@ -59,7 +59,7 @@ public class SecondaryController {
 
     @FXML
     private void switchToFile() {
-        switchScene("file.fxml", "Files", fileBtn);
+        switchScene("fileView.fxml", "Files", fileBtn);
     }
 
     public void initialise(String[] credentials) {
@@ -73,6 +73,11 @@ public class SecondaryController {
         if (username != null) {
             fileText.setText(username);
         }
+    }
+
+    public void initialize(String userName) {
+        this.username = userName;
+        // Initialize other UI components or state here
     }
 
     private void switchScene(String fxmlFile, String title, Button button) {
