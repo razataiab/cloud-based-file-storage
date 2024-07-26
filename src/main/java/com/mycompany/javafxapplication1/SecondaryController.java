@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -21,6 +22,9 @@ public class SecondaryController {
 
     @FXML
     private Text fileText;
+
+    @FXML
+    private Label usernameLabel;
 
     @FXML
     private TableView<User> dataTableView;
@@ -40,13 +44,22 @@ public class SecondaryController {
     private String username;
 
     @FXML
+    private void initialize() {
+        populateTable();
+        if (username != null) {
+            fileText.setText(username);
+            usernameLabel.setText(username); // Display the username
+        }
+    }
+
+    @FXML
     private void terminalbtnHandler(ActionEvent event) {
         switchScene("terminal.fxml", "Terminal", terminalbtn);
     }
 
     @FXML
     private void manageAccountBtnHandler(ActionEvent event) {
-        switchScene("manageuser.fxml", "Update User", manageaccountbtn);
+        switchScene("manageuser.fxml", "Manage User", manageaccountbtn);
     }
 
     @FXML
@@ -62,35 +75,38 @@ public class SecondaryController {
         switchScene("fileView.fxml", "Files", fileBtn, username);
     }
 
-    public void initialise(String[] credentials) {
-        if (credentials != null && credentials.length > 0) {
-            this.username = credentials[0];
+    public void setUsername(String username) {
+        this.username = username;
+        if (fileText != null) {
+            fileText.setText(username);
         }
+        if (usernameLabel != null) {
+            usernameLabel.setText(username); // Set the username label
+        }
+    }
+
+    public void initialize(String username) {
+        this.username = username;
         populateTable();
     }
 
-    public void initialise2() {
-        if (username != null) {
-            fileText.setText(username);
-        }
-    }
-
-    public void initialize(String userName) {
-        this.username = userName;
-        // Initialize other UI components or state here
-    }
-
     private void switchScene(String fxmlFile, String title, Button button) {
-        Stage secondaryStage = new Stage();
-        Stage primaryStage = (Stage) button.getScene().getWindow();
+        Stage currentStage = (Stage) button.getScene().getWindow();
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent root = loader.load();
-            Scene scene = new Scene(root, 1250, 900);
-            secondaryStage.setScene(scene);
-            secondaryStage.setTitle(title);
-            secondaryStage.show();
-            primaryStage.close();
+            Scene scene = new Scene(root);
+
+            if (fxmlFile.equals("secondary.fxml")) {
+                SecondaryController controller = loader.getController();
+                controller.setUsername(username);
+            }
+
+            Stage newStage = new Stage();
+            newStage.setScene(scene);
+            newStage.setTitle(title);
+            newStage.show();
+            currentStage.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -116,6 +132,7 @@ public class SecondaryController {
         }
     }
 
+
     private void populateTable() {
         DB myObj = new DB();
         ObservableList<User> users = FXCollections.observableArrayList();
@@ -132,6 +149,7 @@ public class SecondaryController {
         TableColumn<User, String> passColumn = new TableColumn<>("Password");
         passColumn.setCellValueFactory(new PropertyValueFactory<>("password"));
 
+        dataTableView.getColumns().clear();
         dataTableView.getColumns().addAll(userColumn, passColumn);
         dataTableView.setItems(users);
     }
@@ -165,3 +183,4 @@ public class SecondaryController {
         }
     }
 }
+
