@@ -61,11 +61,9 @@ public class PrimaryController {
                 secondaryStage.setScene(scene);
 
                 SecondaryController controller = loader.getController();
-                controller.initialise(new String[]{username, password});
-                controller.initialise2();
+                controller.setUsername(username); // Pass the username to SecondaryController
 
                 secondaryStage.setTitle("Home");
-                secondaryStage.setUserData("some data sent from Primary Controller");
                 secondaryStage.show();
                 primaryStage.close();
             } else {

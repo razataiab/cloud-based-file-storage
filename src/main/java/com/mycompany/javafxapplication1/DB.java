@@ -11,6 +11,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Random;
@@ -83,6 +84,11 @@ public class DB {
     }
 
     public void addDataToDB(String user, String password) {
+        if (nameExists(user)) {
+            Logger.getLogger(DB.class.getName()).log(Level.INFO, "User with name {0} already exists", user);
+            return;
+        }
+
         String sql = "INSERT INTO " + TABLE_NAME + " (name, password) VALUES (?, ?)";
         try {
             Class.forName("org.sqlite.JDBC");
@@ -92,7 +98,11 @@ public class DB {
                 statement.setString(2, generateSecurePassword(password));
                 statement.executeUpdate();
             }
-        } catch (SQLException | ClassNotFoundException | InvalidKeySpecException e) {
+        } catch (SQLIntegrityConstraintViolationException e) {
+            Logger.getLogger(DB.class.getName()).log(Level.WARNING, "User with name {0} already exists", user);
+        } catch (SQLException e) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, "Error adding data to DB", e);
+        } catch (ClassNotFoundException | InvalidKeySpecException e) {
             Logger.getLogger(DB.class.getName()).log(Level.SEVERE, "Error adding data to DB", e);
         } finally {
             closeConnection();
@@ -287,5 +297,13 @@ public class DB {
 
     public void log(String message) {
         System.out.println(message);
+    }
+
+    public String getUserDirectory(String username) {
+        File userDir = new File(System.getProperty("user.dir"), "UploadedFiles/" + username);
+        if (!userDir.exists()) {
+            userDir.mkdirs();
+        }
+        return userDir.getAbsolutePath();
     }
 }
