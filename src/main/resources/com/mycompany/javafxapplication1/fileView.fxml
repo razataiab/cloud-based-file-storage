@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.javafxapplication1.FileController" spacing="10" alignment="center">
+    <TableView fx:id="fileTableView" prefHeight="400" prefWidth="600">
+        <columns>
+            <TableColumn fx:id="fileNameColumn" text="File Name"/>
+        </columns>
+    </TableView>
+    <HBox spacing="10" alignment="center">
+        <Button fx:id="addFileButton" text="Add File" onAction="#handleAddFileButton"/>
+        <Button fx:id="renameFileButton" text="Rename File" onAction="#handleRenameFileButton"/>
+        <Button fx:id="deleteFileButton" text="Delete File" onAction="#handleDeleteFileButton"/>
+    </HBox>
+    <Button fx:id="goBackButton" text="Go Back" onAction="#handleGoBackButton"/>
+</VBox>
