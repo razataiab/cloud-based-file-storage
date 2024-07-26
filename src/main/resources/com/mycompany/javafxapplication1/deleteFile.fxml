@@ -11,3 +11,4 @@
     <ListView fx:id="deleteFileListView" prefHeight="150"/>
     <Button text="Delete" onAction="#handleDeleteButton"/>
 </VBox>
+
