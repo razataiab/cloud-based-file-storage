@@ -1,76 +1,127 @@
 package com.mycompany.javafxapplication1;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class DeleteFileController extends FileActionController {
 
     @FXML
-    private ListView<String> deleteFileListView;
+    private Button deleteButton;
 
     @FXML
-    private TextField filePathField;
+    private ListView<String> fileListView;
 
-    private List<File> filesToDelete;
+    // Path to Docker container directory
+    private static final String CONTAINER_PATH = "/home/ntu-user/NetBeansProjects";
 
-    @FXML
-    private void handleSelectFileToDeleteButton(ActionEvent event) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select Files to Delete");
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.dir"), "UploadedFiles/" + userName));
-        filesToDelete = fileChooser.showOpenMultipleDialog(new Stage());
-        deleteFileListView.getItems().clear();
-        if (filesToDelete != null) {
-            for (File file : filesToDelete) {
-                deleteFileListView.getItems().add(file.getAbsolutePath());
+    private ObservableList<String> userFiles;
+    private String userName;
+
+    public void initialize(String userName) {
+        this.userName = userName;
+        userFiles = FXCollections.observableArrayList();
+        loadUserFiles();
+        fileListView.setItems(userFiles);
+    }
+
+    private void loadUserFiles() {
+        // Use the directory path within the Docker-mounted volume
+        String userDir = CONTAINER_PATH + "/" + userName;
+        
+        // Debug: Print the directory being accessed
+        System.out.println("Accessing directory: " + userDir);
+
+        // Execute the Docker command to list files
+        try {
+            // Build and execute the Docker command
+            String command = "docker exec ntu-vm-comp20081 ls " + userDir;
+            System.out.println("Executing command: " + command);  // Debugging statement
+            ProcessBuilder processBuilder = new ProcessBuilder("sh", "-c", command);
+            Process process = processBuilder.start();
+
+            // Read the command output
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            userFiles.clear(); // Clear current list before adding new items
+            while ((line = reader.readLine()) != null) {
+                System.out.println("File found: " + line); // Debugging statement
+                userFiles.add(line);  // Add file names to the list
             }
-            if (!filesToDelete.isEmpty()) {
-                filePathField.setText(filesToDelete.get(0).getAbsolutePath());
+
+            int exitCode = process.waitFor();
+            if (exitCode != 0) {
+                // Read error stream to understand the issue
+                BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                String errorLine;
+                while ((errorLine = errorReader.readLine()) != null) {
+                    System.err.println("Error: " + errorLine);  // Debugging error output
+                }
+                System.err.println("Failed to retrieve files from Docker container with exit code: " + exitCode);
             }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
     @FXML
     private void handleDeleteButton(ActionEvent event) {
-        if (filesToDelete != null && !filesToDelete.isEmpty()) {
-            boolean allDeleted = true;
-            for (File file : filesToDelete) {
-                if (!file.delete()) {
-                    allDeleted = false;
-                }
-            }
-            if (allDeleted) {
-                showAlert("Success", "All selected files deleted successfully.");
-                deleteFileListView.getItems().clear();
-                filesToDelete = null;
-                filePathField.clear();
-                closeWindow();
-            } else {
-                showAlert("Error", "Failed to delete some files.");
-            }
+        String selectedFile = fileListView.getSelectionModel().getSelectedItem();
+        if (selectedFile != null) {
+            deleteFileInDocker(selectedFile);
         } else {
-            showAlert("Error", "No files selected.");
+            showAlert("Error", "No file selected.");
         }
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+    private void deleteFileInDocker(String fileName) {
+        String userDir = CONTAINER_PATH + "/" + userName;
+        String command = String.format(
+            "docker exec ntu-vm-comp20081 rm %s/%s",
+            userDir, fileName
+        );
+        System.out.println("Executing delete command: " + command); // Debugging
+
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder("sh", "-c", command);
+            Process process = processBuilder.start();
+
+            int exitCode = process.waitFor();
+            if (exitCode == 0) {
+                showAlert("Success", "File deleted successfully.");
+                loadUserFiles(); // Refresh the file list
+            } else {
+                // Read error stream to understand the issue
+                BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                String errorLine;
+                while ((errorLine = errorReader.readLine()) != null) {
+                    System.err.println("Error: " + errorLine);  // Debugging error output
+                }
+                showAlert("Error", "Failed to delete file. Check console for details.");
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            showAlert("Error", "Exception occurred during delete operation.");
+        }
+    }
+
+    // Override method with protected access
+    @Override
+    protected void showAlert(String title, String message) {
+        super.showAlert(title, message); // Optionally call super to reuse common behavior
     }
 
     private void closeWindow() {
-        Stage stage = (Stage) deleteFileListView.getScene().getWindow();
+        Stage stage = (Stage) deleteButton.getScene().getWindow();
         stage.close();
     }
 }

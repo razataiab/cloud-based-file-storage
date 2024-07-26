@@ -10,8 +10,6 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 
 public class AddFileController extends FileActionController {
 
@@ -28,41 +26,62 @@ public class AddFileController extends FileActionController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select File to Upload");
         selectedFile = fileChooser.showOpenDialog(new Stage());
+
         if (selectedFile != null) {
             filePathField.setText(selectedFile.getAbsolutePath());
+            // Debugging: Print the selected file path
+            System.out.println("Selected file: " + selectedFile.getAbsolutePath());
+        } else {
+            // Debugging: Print if no file was selected
+            System.out.println("No file selected.");
         }
     }
 
     @FXML
     private void handleUploadButton(ActionEvent event) {
         if (selectedFile != null) {
-            saveFileToDirectory(selectedFile);
-            showAlert("Success", "File uploaded successfully.");
-            closeWindow();
+            try {
+                saveFileToContainer(selectedFile);
+                showAlert("Success", "File uploaded successfully.");
+                closeWindow();
+            } catch (IOException | InterruptedException e) {
+                showAlert("Error", "Failed to upload file: " + e.getMessage());
+                // Debugging: Print stack trace for errors
+                e.printStackTrace();
+            }
         } else {
             showAlert("Error", "No file selected.");
+            // Debugging: Print error message
+            System.out.println("Upload button clicked but no file was selected.");
         }
     }
 
-    private void saveFileToDirectory(File file) {
-        File userDir = new File(System.getProperty("user.dir"), "UploadedFiles/" + userName);
-        if (!userDir.exists()) {
-            userDir.mkdirs();
-        }
-        File destFile = new File(userDir, file.getName());
-        try {
-            Files.copy(file.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    private void saveFileToContainer(File file) throws IOException, InterruptedException {
+        // Use the user-specific container path
+        String userContainerPath = getUserContainerPath();
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+        // Debugging: Print user-specific container path
+        System.out.println("User-specific container path: " + userContainerPath);
+
+        // Prepare the Docker command to copy the file to the user's directory
+        String command = String.format("docker cp %s ntu-vm-comp20081:%s/%s",
+                file.getAbsolutePath(), userContainerPath, file.getName());
+
+        // Debugging: Print the Docker command being executed
+        System.out.println("Executing command: " + command);
+
+        // Using ProcessBuilder to execute the Docker command
+        ProcessBuilder processBuilder = new ProcessBuilder();
+        processBuilder.command("sh", "-c", command);
+        Process process = processBuilder.start();
+        int exitCode = process.waitFor();
+
+        // Debugging: Print the exit code of the command
+        System.out.println("Command exited with code: " + exitCode);
+
+        if (exitCode != 0) {
+            throw new IOException("Failed to copy file to Docker container for user " + userName + ".");
+        }
     }
 
     private void closeWindow() {
