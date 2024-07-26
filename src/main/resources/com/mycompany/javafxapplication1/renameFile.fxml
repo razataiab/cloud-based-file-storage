@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.javafxapplication1.RenameFileController" spacing="10" alignment="center" prefWidth="400" prefHeight="200">
-    <TextField fx:id="filePathField" promptText="File path will be displayed here" editable="false" />
-    <Button text="Select File" onAction="#handleSelectFileButton"/>
-    <Button fx:id="renameButton" text="Rename" onAction="#handleRenameButton"/>
+<VBox xmlns:fx="http://javafx.com/fxml" xmlns="http://javafx.com/javafx/14" fx:controller="com.mycompany.javafxapplication1.RenameFileController">
+    <ListView fx:id="fileListView"/>
+    <Button fx:id="renameButton" text="Rename Selected File" onAction="#handleRenameButton"/>
 </VBox>

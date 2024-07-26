@@ -59,7 +59,7 @@ public class SecondaryController {
 
     @FXML
     private void switchToFile() {
-        switchScene("fileView.fxml", "Files", fileBtn);
+        switchScene("fileView.fxml", "Files", fileBtn, username);
     }
 
     public void initialise(String[] credentials) {
@@ -86,6 +86,26 @@ public class SecondaryController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent root = loader.load();
+            Scene scene = new Scene(root, 1250, 900);
+            secondaryStage.setScene(scene);
+            secondaryStage.setTitle(title);
+            secondaryStage.show();
+            primaryStage.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    // Overloaded method to switch scene with username
+    private void switchScene(String fxmlFile, String title, Button button, String userName) {
+        Stage secondaryStage = new Stage();
+        Stage primaryStage = (Stage) button.getScene().getWindow();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
+            Parent root = loader.load();
+            FileController controller = loader.getController();
+            controller.initialize(userName);
+            
             Scene scene = new Scene(root, 1250, 900);
             secondaryStage.setScene(scene);
             secondaryStage.setTitle(title);
