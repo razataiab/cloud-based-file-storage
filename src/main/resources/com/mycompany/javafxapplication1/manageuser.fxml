@@ -21,5 +21,6 @@
         <PasswordField fx:id="delacctpass" layoutX="498.0" layoutY="634.0" prefHeight="24.0" prefWidth="303.0" promptText="Password" />
         <Button fx:id="confirm3" layoutX="823.0" layoutY="634.0" mnemonicParsing="false" onAction="#deleteAccountBtnHandler" text="DELETE ACCOUNT" textFill="RED" />
         <Button fx:id="backButton" layoutX="17.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleBackButtonAction" text="Go Home" />
+        <Button fx:id="logoutButton" layoutX="100.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleLogoutButtonAction" text="Logout" /> <!-- Added Logout Button -->
     </children>
 </AnchorPane>

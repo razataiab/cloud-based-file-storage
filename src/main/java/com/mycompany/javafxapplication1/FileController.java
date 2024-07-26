@@ -1,21 +1,20 @@
 package com.mycompany.javafxapplication1;
 
+import java.io.File;
+import java.io.IOException;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-
-import java.io.File;
-import java.io.IOException;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 public class FileController {
 
@@ -80,7 +79,7 @@ public class FileController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("secondary.fxml"));
             Parent root = loader.load();
             SecondaryController controller = loader.getController();
-            controller.initialize(userName); // Ensure userName is a single String
+            controller.setUsername(userName); // Ensure userName is set correctly
     
             Stage stage = (Stage) goBackButton.getScene().getWindow();
             stage.setScene(new Scene(root));

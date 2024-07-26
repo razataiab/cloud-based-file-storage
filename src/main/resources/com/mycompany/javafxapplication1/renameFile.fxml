@@ -9,3 +9,4 @@
     <Button text="Select File" onAction="#handleSelectFileButton"/>
     <Button fx:id="renameButton" text="Rename" onAction="#handleRenameButton"/>
 </VBox>
+
