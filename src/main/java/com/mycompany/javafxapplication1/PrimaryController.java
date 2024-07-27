@@ -33,7 +33,7 @@ public class PrimaryController {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("register.fxml"));
             Parent root = loader.load();
-            Scene scene = new Scene(root, 600, 400);
+            Scene scene = new Scene(root, 1250, 900);
             secondaryStage.setScene(scene);
             secondaryStage.setTitle("Register a new User");
             secondaryStage.show();
@@ -57,7 +57,7 @@ public class PrimaryController {
                 FXMLLoader loader = new FXMLLoader();
                 loader.setLocation(getClass().getResource("secondary.fxml"));
                 Parent root = loader.load();
-                Scene scene = new Scene(root, 600, 400);
+                Scene scene = new Scene(root, 1250, 900);
                 secondaryStage.setScene(scene);
 
                 SecondaryController controller = loader.getController();

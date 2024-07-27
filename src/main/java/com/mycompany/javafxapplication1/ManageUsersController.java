@@ -71,7 +71,7 @@ public class ManageUsersController {
         Stage secondaryStage = new Stage();
         Stage currentStage = (Stage) backButton.getScene().getWindow();
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("secondary.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/javafxapplication1/secondary.fxml"));
             Parent root = loader.load();
 
             // Pass data to SecondaryController
@@ -90,15 +90,17 @@ public class ManageUsersController {
 
     private void switchToPrimary() {
         Stage primaryStage = new Stage();
-        Stage currentStage = (Stage) backButton.getScene().getWindow();
+        Stage currentStage = (Stage) logoutButton.getScene().getWindow();
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("primary.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mycompany/javafxapplication1/primary.fxml"));
             Parent root = loader.load();
 
             Scene scene = new Scene(root, 1250, 900);
             primaryStage.setScene(scene);
             primaryStage.setTitle("Primary View");
             primaryStage.show();
+
+            // Close the current stage after showing the new stage
             currentStage.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -149,27 +151,13 @@ public class ManageUsersController {
 
     @FXML
     private void handleLogoutButtonAction() {
-        logoutUser();
-        switchToLogin();
-    }
-
-    private void logoutUser() {
-        System.out.println("User logged out successfully.");
-    }
-
-    private void switchToLogin() {
-        Stage loginStage = new Stage();
-        Stage currentStage = (Stage) logoutButton.getScene().getWindow();
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("login.fxml"));
-            Parent root = loader.load();
-            Scene scene = new Scene(root, 1250, 900);
-            loginStage.setScene(scene);
-            loginStage.setTitle("Login");
-            loginStage.show();
-            currentStage.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // Perform logout and switch to the primary screen
+        switchToPrimary();
+        
+        // Show logout confirmation message after switching to the primary screen
+        // Use a Platform.runLater to ensure this runs after the UI has been updated
+        javafx.application.Platform.runLater(() -> {
+            showDialog("Logout", "You have been logged out successfully.");
+        });
     }
 }

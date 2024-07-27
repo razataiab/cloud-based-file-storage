@@ -11,7 +11,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Random;
@@ -98,8 +97,6 @@ public class DB {
                 statement.setString(2, generateSecurePassword(password));
                 statement.executeUpdate();
             }
-        } catch (SQLIntegrityConstraintViolationException e) {
-            Logger.getLogger(DB.class.getName()).log(Level.WARNING, "User with name {0} already exists", user);
         } catch (SQLException e) {
             Logger.getLogger(DB.class.getName()).log(Level.SEVERE, "Error adding data to DB", e);
         } catch (ClassNotFoundException | InvalidKeySpecException e) {
