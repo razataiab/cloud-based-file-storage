@@ -135,3 +135,4 @@ public class RenameFileController extends FileActionController {
         stage.close();
     }
 }
+
