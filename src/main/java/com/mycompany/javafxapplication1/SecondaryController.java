@@ -30,6 +30,9 @@ public class SecondaryController {
     private TableView<User> dataTableView;
 
     @FXML
+    private Button terminalbtn;
+
+    @FXML
     private Button manageaccountbtn;
 
     @FXML
@@ -47,6 +50,11 @@ public class SecondaryController {
             fileText.setText(username);
             usernameLabel.setText(username); // Display the username
         }
+    }
+
+    @FXML
+    private void terminalbtnHandler(ActionEvent event) {
+        switchScene("terminal.fxml", "Terminal", terminalbtn);
     }
 
     @FXML
@@ -175,3 +183,4 @@ public class SecondaryController {
         }
     }
 }
+

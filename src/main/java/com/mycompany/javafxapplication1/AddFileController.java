@@ -89,3 +89,4 @@ public class AddFileController extends FileActionController {
         stage.close();
     }
 }
+
