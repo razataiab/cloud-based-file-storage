@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" prefHeight="900.0" prefWidth="1250.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.javafxapplication1.ManageUsersController">
+<AnchorPane id="AnchorPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.javafxapplication1.ManageUsersController">
     <children>
         <Label layoutX="1115.0" layoutY="18.0" text="User:" />
         <Text fx:id="fileText" layoutX="1159.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" />
@@ -21,6 +21,6 @@
         <PasswordField fx:id="delacctpass" layoutX="498.0" layoutY="634.0" prefHeight="24.0" prefWidth="303.0" promptText="Password" />
         <Button fx:id="confirm3" layoutX="823.0" layoutY="634.0" mnemonicParsing="false" onAction="#deleteAccountBtnHandler" text="DELETE ACCOUNT" textFill="RED" />
         <Button fx:id="backButton" layoutX="17.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleBackButtonAction" text="Go Home" />
-        <Button fx:id="logoutButton" layoutX="100.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleLogoutButtonAction" text="Logout" /> <!-- Added Logout Button -->
+        <Button fx:id="logoutButton" layoutX="100.0" layoutY="14.0" mnemonicParsing="false" onAction="#handleLogoutButtonAction" text="Logout" />
     </children>
 </AnchorPane>
