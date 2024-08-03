@@ -1,5 +1,9 @@
 package com.mycompany.javafxapplication1;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -7,17 +11,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
 public class FileController {
 
@@ -43,25 +42,55 @@ public class FileController {
 
     private String userName;
 
+    private static final String CONTAINER_NAME = "file-storage"; // Make sure this matches your container's name
+
+    private static final String BASE_CONTAINER_PATH = "/home/razataiab/storage"; // Path in the container
+
     public void initialize(String userName) {
         this.userName = userName;
         userFiles = FXCollections.observableArrayList();
         fileNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        checkAndInitializeUserDirectory();
         loadUserFiles();
         fileTableView.setItems(userFiles);
     }
 
+    private void checkAndInitializeUserDirectory() {
+        String userDir = BASE_CONTAINER_PATH + "/" + userName;
+
+        try {
+            // Command to ensure the directory exists
+            String checkDirCommand = String.format("docker exec %s mkdir -p %s", CONTAINER_NAME, userDir);
+            System.out.println("Checking/creating user directory: " + userDir);
+            ProcessBuilder processBuilder = new ProcessBuilder("sh", "-c", checkDirCommand);
+            Process process = processBuilder.start();
+            int exitCode = process.waitFor();
+
+            if (exitCode == 0) {
+                System.out.println("User directory is ready: " + userDir);
+            } else {
+                BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                String errorLine;
+                while ((errorLine = errorReader.readLine()) != null) {
+                    System.err.println("Error: " + errorLine);  // Debugging error output
+                }
+                System.err.println("Failed to ensure user directory with exit code: " + exitCode);
+            }
+
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void loadUserFiles() {
-        // Use the directory path within the Docker-mounted volume
-        String userDir = "/home/ntu-user/NetBeansProjects/" + userName;
-        
+        String userDir = BASE_CONTAINER_PATH + "/" + userName;
+
         // Debug: Print the directory being accessed
         System.out.println("Accessing directory: " + userDir);
 
         // Execute the Docker command to list files
         try {
-            // Build and execute the Docker command
-            String command = "docker exec ntu-vm-comp20081 ls " + userDir;
+            String command = String.format("docker exec %s ls %s", CONTAINER_NAME, userDir);
             System.out.println("Executing command: " + command);  // Debugging statement
             ProcessBuilder processBuilder = new ProcessBuilder("sh", "-c", command);
             Process process = processBuilder.start();
@@ -76,9 +105,9 @@ public class FileController {
                 userFiles.add(new FileInfo(line));  // Use FileInfo
                 fileCount++;  // Increment file count
             }
-            
+
             // Debug: Print total number of files found
-            System.out.println("Total files retrieved: " + fileCount); 
+            System.out.println("Total files retrieved: " + fileCount);
 
             int exitCode = process.waitFor();
             if (exitCode != 0) {
@@ -127,8 +156,7 @@ public class FileController {
 
     private void openFileActionView(String fxmlFile, String title) {
         try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource(fxmlFile));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFile));
             Parent root = loader.load();
 
             // Pass userName to the action controller
