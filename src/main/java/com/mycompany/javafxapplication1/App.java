@@ -10,9 +10,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-/**
- * JavaFX App
- */
 public class App extends Application {
 
     @Override
@@ -20,15 +17,6 @@ public class App extends Application {
         Stage secondaryStage = new Stage();
         DB myObj = new DB();
         myObj.log("-------- Simple Tutorial on how to make JDBC connection to SQLite DB ------------");
-
-        // If delTable method is used and might throw ClassNotFoundException, handle it here.
-        // Uncomment and handle as needed:
-        // myObj.log("\n---------- Drop table ----------");
-        // try {
-        //     myObj.delTable(myObj.getTableName());
-        // } catch (ClassNotFoundException ex) {
-        //     Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-        // }
 
         myObj.log("\n---------- Create table ----------");
         try {
@@ -45,7 +33,35 @@ public class App extends Application {
             secondaryStage.setScene(scene);
             secondaryStage.setTitle("Primary View");
             secondaryStage.show();
+
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        // Run your exit script when the application stops
+        runExitScript();
+    }
+
+    private void runExitScript() {
+        try {
+            // Set the path to your shell script
+            String scriptPath = "app_exit.sh";
+
+            // Build the process for executing the shell script
+            ProcessBuilder processBuilder = new ProcessBuilder("/bin/bash", scriptPath);
+
+            // Start the process
+            Process process = processBuilder.start();
+
+            // Wait for the process to complete if you need synchronous execution
+            int exitCode = process.waitFor();
+            System.out.println("app_exit.sh executed with exit code: " + exitCode);
+
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
